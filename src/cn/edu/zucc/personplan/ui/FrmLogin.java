@@ -1,7 +1,6 @@
 package cn.edu.zucc.personplan.ui;
 
 import java.awt.BorderLayout;
-import java.awt.Button;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.Toolkit;
@@ -23,6 +22,10 @@ import cn.edu.zucc.personplan.model.BeanUser;
 import cn.edu.zucc.personplan.util.BaseException;
 
 public class FrmLogin extends JDialog implements ActionListener {
+  /**
+   *
+   */
+  private static final long serialVersionUID = 4350830209634088267L;
   private JPanel toolBar = new JPanel();
   private JPanel workPane = new JPanel();
   private JButton btnLogin = new JButton("登陆");

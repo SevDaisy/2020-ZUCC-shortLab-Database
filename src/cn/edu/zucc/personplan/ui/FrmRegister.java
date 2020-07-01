@@ -15,10 +15,13 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 import cn.edu.zucc.personplan.PersonPlanUtil;
-import cn.edu.zucc.personplan.model.BeanUser;
 import cn.edu.zucc.personplan.util.BaseException;
 
 public class FrmRegister extends JDialog implements ActionListener {
+  /**
+   *
+   */
+  private static final long serialVersionUID = -7044362037982163590L;
   private JPanel toolBar = new JPanel();
   private JPanel workPane = new JPanel();
   private Button btnOk = new Button("注册");
@@ -58,7 +61,8 @@ public class FrmRegister extends JDialog implements ActionListener {
       String pwd1 = new String(this.edtPwd.getPassword());
       String pwd2 = new String(this.edtPwd2.getPassword());
       try {
-        BeanUser user = PersonPlanUtil.userManager.reg(userid, pwd1, pwd2);
+        // BeanUser user = PersonPlanUtil.userManager.reg(userid, pwd1, pwd2);
+        PersonPlanUtil.userManager.reg(userid, pwd1, pwd2);
         this.setVisible(false);
       } catch (BaseException e1) {
         JOptionPane.showMessageDialog(null, e1.getMessage(), "错误", JOptionPane.ERROR_MESSAGE);

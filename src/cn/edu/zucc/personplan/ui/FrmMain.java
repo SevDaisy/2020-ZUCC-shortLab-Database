@@ -147,6 +147,7 @@ public class FrmMain extends JFrame implements ActionListener {
         if (i < 0) {
           return;
         }
+        // 如何更改 来使得 Step的UI界面 也能及时更新？
         FrmMain.this.reloadPlanStepTabel(i);
         FrmMain.this.reloadPlanTable();
       }

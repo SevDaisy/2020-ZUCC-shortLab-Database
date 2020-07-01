@@ -18,7 +18,10 @@ import cn.edu.zucc.personplan.PersonPlanUtil;
 import cn.edu.zucc.personplan.util.BaseException;
 
 public class FrmAddPlan extends JDialog implements ActionListener {
-
+  /**
+   *
+   */
+  private static final long serialVersionUID = -3846251895946104575L;
   private JPanel toolBar = new JPanel();
   private JPanel workPane = new JPanel();
   private Button btnOk = new Button("确定");

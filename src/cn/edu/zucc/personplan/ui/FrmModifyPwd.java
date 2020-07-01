@@ -2,7 +2,6 @@ package cn.edu.zucc.personplan.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Button;
-import java.awt.Dialog;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
@@ -13,13 +12,16 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
-import javax.swing.JTextField;
 
 import cn.edu.zucc.personplan.PersonPlanUtil;
 import cn.edu.zucc.personplan.model.BeanUser;
 import cn.edu.zucc.personplan.util.BaseException;
 
 public class FrmModifyPwd extends JDialog implements ActionListener {
+  /**
+   *
+   */
+  private static final long serialVersionUID = -7539647053067256259L;
   private JPanel toolBar = new JPanel();
   private JPanel workPane = new JPanel();
   private Button btnOk = new Button("确定");

@@ -19,6 +19,10 @@ import cn.edu.zucc.personplan.model.BeanPlan;
 import cn.edu.zucc.personplan.util.BaseException;
 
 public class FrmAddStep extends JDialog implements ActionListener {
+  /**
+   *
+   */
+  private static final long serialVersionUID = 6325719737372095721L;
   public BeanPlan plan = null;
   private JPanel toolBar = new JPanel();
   private JPanel workPane = new JPanel();

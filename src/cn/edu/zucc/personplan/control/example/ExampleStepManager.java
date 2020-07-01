@@ -187,12 +187,99 @@ public class ExampleStepManager implements IStepManager {
 
   @Override
   public void startStep(BeanStep step) throws BaseException {
-
+    // 关于更新计划表中的 已开始步骤的数量 是每次都重新数步骤，还是只需要当前值+1？
+    // 我选择当前值+1 因为这样和之前的 plan.step_count::step.step_order.MAX 的绑定相匹配
+    // 同样需要事务控制
+    long timeNow = System.currentTimeMillis();
+    Connection conn = null;
+    try {
+      conn = DBUtil_Pool.getConnection();
+      String sql = "UPDATE tbl_step SET real_begin_time=? WHERE step_id=?";
+      java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+      pst.setTimestamp(1, new java.sql.Timestamp(timeNow));
+      pst.setInt(2, step.getStep_id());
+      if (pst.executeUpdate() == 1) {
+        System.out.println("成功设置 步骤 _id: " + step.getStep_id() + " 的实际开始时间");
+      } else {
+        throw new RuntimeException("数据库 更新 step 异常");
+      }
+      int start_step_count;
+      sql = "SELECT start_step_count FROM tbl_plan WHERE plan_id=?";
+      pst = conn.prepareStatement(sql);
+      pst.setInt(1, step.getPlan_id());
+      ResultSet rs = pst.executeQuery();
+      rs.next();
+      start_step_count = rs.getInt(1) + 1;
+      sql = "UPDATE tbl_plan SET start_step_count=? WHERE plan_id=?";
+      pst = conn.prepareStatement(sql);
+      pst.setInt(1, start_step_count);
+      pst.setInt(2, step.getPlan_id());
+      if (pst.executeUpdate() == 1) {
+        System.out.println("成功更新当前计划 _id: " + step.getPlan_id() + " 的 已开始步骤数量");
+      } else {
+        throw new RuntimeException("数据库 更新 plan 异常");
+      }
+      pst.close();
+    } catch (SQLException e) {
+      e.printStackTrace();
+      throw new DbException(e);
+    } finally {
+      if (conn != null)
+        try {
+          conn.close();
+        } catch (SQLException e) {
+          e.printStackTrace();
+        }
+    }
   }
 
   @Override
   public void finishStep(BeanStep step) throws BaseException {
-
+    // 和 上一个 startStep 几乎一模一样
+    // 关于更新计划表中的 已结束步骤的数量 是每次都重新数步骤，还是只需要当前值+1？
+    // 我选择当前值+1 因为这样和之前的 plan.step_count::step.step_order.MAX 的绑定相匹配
+    // 同样需要事务控制
+    long timeNow = System.currentTimeMillis();
+    Connection conn = null;
+    try {
+      conn = DBUtil_Pool.getConnection();
+      String sql = "UPDATE tbl_step SET real_end_time=? WHERE step_id=?";
+      java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+      pst.setTimestamp(1, new java.sql.Timestamp(timeNow));
+      pst.setInt(2, step.getStep_id());
+      if (pst.executeUpdate() == 1) {
+        System.out.println("成功设置 步骤 _id: " + step.getStep_id() + " 的实际结束时间");
+      } else {
+        throw new RuntimeException("数据库 更新 step 异常");
+      }
+      int finished_step_count;
+      sql = "SELECT finished_step_count FROM tbl_plan WHERE plan_id=?";
+      pst = conn.prepareStatement(sql);
+      pst.setInt(1, step.getPlan_id());
+      ResultSet rs = pst.executeQuery();
+      rs.next();
+      finished_step_count = rs.getInt(1) + 1;
+      sql = "UPDATE tbl_plan SET finished_step_count=? WHERE plan_id=?";
+      pst = conn.prepareStatement(sql);
+      pst.setInt(1, finished_step_count);
+      pst.setInt(2, step.getPlan_id());
+      if (pst.executeUpdate() == 1) {
+        System.out.println("成功更新当前计划 _id: " + step.getPlan_id() + " 的 已结束步骤数量");
+      } else {
+        throw new RuntimeException("数据库 更新 plan 异常");
+      }
+      pst.close();
+    } catch (SQLException e) {
+      e.printStackTrace();
+      throw new DbException(e);
+    } finally {
+      if (conn != null)
+        try {
+          conn.close();
+        } catch (SQLException e) {
+          e.printStackTrace();
+        }
+    }
   }
 
   @Override
