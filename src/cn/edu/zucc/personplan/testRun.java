@@ -31,7 +31,10 @@ public class testRun {
   }
 
   public static void main(String[] args) throws SQLException {
-    testRun k = new testRun();
-    k.showTables();
+    // testRun k = new testRun();
+    // k.showTables();
+    int order = 100;
+    System.out.println(order + "");
+    System.out.println(order);
   }
 }

@@ -7,51 +7,52 @@ import cn.edu.zucc.personplan.model.BeanStep;
 import cn.edu.zucc.personplan.util.BaseException;
 
 public interface IStepManager {
-	public List<BeanStep> loadSteps(BeanPlan plan)throws BaseException;
-	
-	/**
-	 * Ìí¼Ó²½Öè
-	 * ĞÂÌîµÄ²½ÖèĞòºÅÎªµ±Ç°¼Æ»®×î´ó²½ÖèĞòºÅ+1
-	 * ×¢Òâ£ºĞèÍê³É×Ö·û´®ºÍÊ±¼äÀàĞÍµÄ×ª»»£¬Ìí¼ÓºóĞèµ÷Õû¼Æ»®±íÖĞÏàÓ¦µÄÊıÁ¿Öµ
-	 * @param plan
-	 * @param name
-	 * @param planstartdate
-	 * @param planfinishdate
-	 * @throws BaseException
-	 */
-	public void add(BeanPlan plan, String name, String planstartdate, String planfinishdate)throws BaseException;
+  public List<BeanStep> loadSteps(BeanPlan plan) throws BaseException;
 
-	
-	
-	/**
-	 * É¾³ı²½Öè£¬
-	 * ×¢ÒâÉ¾³ıºóĞèµ÷Õû¼Æ»®±íÖĞ¶ÔÓ¦µÄ²½ÖèÊıÁ¿
-	 * @param step
-	 * @throws BaseException
-	 */
-	public void deleteStep(BeanStep step)throws BaseException;
+  /**
+   * æ·»åŠ æ­¥éª¤ æ–°å¡«çš„æ­¥éª¤åºå·ä¸ºå½“å‰è®¡åˆ’æœ€å¤§æ­¥éª¤åºå·+1 æ³¨æ„ï¼šéœ€å®Œæˆå­—ç¬¦ä¸²å’Œæ—¶é—´ç±»å‹çš„è½¬æ¢ï¼Œæ·»åŠ åéœ€è°ƒæ•´è®¡åˆ’è¡¨ä¸­ç›¸åº”çš„æ•°é‡å€¼
+   * 
+   * @param plan
+   * @param name
+   * @param planstartdate
+   * @param planfinishdate
+   * @throws BaseException
+   */
+  public void add(BeanPlan plan, String name, String planstartdate, String planfinishdate) throws BaseException;
 
-	/**
-	 * ÉèÖÃµ±Ç°²½ÖèµÄÊµ¼Ê¿ªÊ¼Ê±¼ä£¬¼°¶ÔÓ¦µÄ¼Æ»®±íÖĞÒÑ¿ªÊ¼²½ÖèÊıÁ¿
-	 * 
-	 * @param step
-	 * @throws BaseException
-	 */
-	public void startStep(BeanStep step)throws BaseException;
-	/**
-	 * ÉèÖÃµ±Ç°²½ÖèµÄÊµ¼ÊÍê³ÉÊ±¼ä£¬¼°¶ÔÓ¦µÄ¼Æ»®±íÖĞÒÑÍê³É²½ÖèÊıÁ¿
-	 * @param step
-	 * @throws BaseException
-	 */
-	public void finishStep(BeanStep step)throws BaseException;
-	/**
-	 * µ÷Õûµ±Ç°²½ÖèµÄË³ĞòºÅ
-	 * ×¢Òâ£ºÊı¾İ¿â±íÖĞ£¬plan_id,step_orderÉÏ½¨Á¢ÁËÎ¨Ò»Ë÷Òı£¬µ÷Õûµ±Ç°²½ÖèµÄĞòºÅÖµºÍÉÏÒ»²½ÖèµÄĞòºÅÖµÊ±²»ÄÜ³öÏÖĞòºÅÖµÒ»ÑùµÄÇé¿ö
-	 * @param step
-	 * @throws BaseException
-	 */
-	public void moveUp(BeanStep step)throws BaseException;
-	public void moveDown(BeanStep step)throws BaseException;
-	
+  /**
+   * åˆ é™¤æ­¥éª¤ï¼Œ æ³¨æ„åˆ é™¤åéœ€è°ƒæ•´è®¡åˆ’è¡¨ä¸­å¯¹åº”çš„æ­¥éª¤æ•°é‡
+   * 
+   * @param step
+   * @throws BaseException
+   */
+  public void deleteStep(BeanStep step) throws BaseException;
+
+  /**
+   * è®¾ç½®å½“å‰æ­¥éª¤çš„å®é™…å¼€å§‹æ—¶é—´ï¼ŒåŠå¯¹åº”çš„è®¡åˆ’è¡¨ä¸­å·²å¼€å§‹æ­¥éª¤æ•°é‡
+   * 
+   * @param step
+   * @throws BaseException
+   */
+  public void startStep(BeanStep step) throws BaseException;
+
+  /**
+   * è®¾ç½®å½“å‰æ­¥éª¤çš„å®é™…å®Œæˆæ—¶é—´ï¼ŒåŠå¯¹åº”çš„è®¡åˆ’è¡¨ä¸­å·²å®Œæˆæ­¥éª¤æ•°é‡
+   * 
+   * @param step
+   * @throws BaseException
+   */
+  public void finishStep(BeanStep step) throws BaseException;
+
+  /**
+   * è°ƒæ•´å½“å‰æ­¥éª¤çš„é¡ºåºå·
+   * æ³¨æ„ï¼šæ•°æ®åº“è¡¨ä¸­ï¼Œplan_id,step_orderä¸Šå»ºç«‹äº†å”¯ä¸€ç´¢å¼•ï¼Œè°ƒæ•´å½“å‰æ­¥éª¤çš„åºå·å€¼å’Œä¸Šä¸€æ­¥éª¤çš„åºå·å€¼æ—¶ä¸èƒ½å‡ºç°åºå·å€¼ä¸€æ ·çš„æƒ…å†µ
+   * 
+   * @param step
+   * @throws BaseException
+   */
+  public void moveUp(BeanStep step) throws BaseException;
+
+  public void moveDown(BeanStep step) throws BaseException;
 
 }

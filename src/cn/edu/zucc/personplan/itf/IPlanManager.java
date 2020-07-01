@@ -6,25 +6,28 @@ import cn.edu.zucc.personplan.model.BeanPlan;
 import cn.edu.zucc.personplan.util.BaseException;
 
 public interface IPlanManager {
-	/**
-	 * Ìí¼Ó¼Æ»®
-	 * ÒªÇóĞÂÔöµÄ¼Æ»®µÄÅÅĞòºÅÎªµ±Ç°ÓÃ»§ÏÖÓĞ×î´óÅÅĞòºÅ+1
-	 * ×¢Òâ£ºµ±Ç°µÇÂ½ÓÃ»§¿ÉÍ¨¹ı BeanUser.currentLoginUser»ñÈ¡
-	 * @param name  ¼Æ»®Ãû³Æ
-	 * @throws BaseException
-	 */
-	public BeanPlan addPlan(String name) throws BaseException;
-	/**
-	 * ÌáÈ¡µ±Ç°ÓÃ»§ËùÓĞ¼Æ»®
-	 * @return
-	 * @throws BaseException
-	 */
-	public List<BeanPlan> loadAll()throws BaseException;
-	/**
-	 * É¾³ı¼Æ»®£¬Èç¹û¼Æ»®ÏÂ´æÔÚ²½Öè£¬Ôò²»ÔÊĞíÉ¾³ı
-	 * @param plan
-	 * @throws BaseException
-	 */
-	public void deletePlan(BeanPlan plan)throws BaseException;
+  /**
+   * æ·»åŠ è®¡åˆ’ è¦æ±‚æ–°å¢çš„è®¡åˆ’çš„æ’åºå·ä¸ºå½“å‰ç”¨æˆ·ç°æœ‰æœ€å¤§æ’åºå·+1 æ³¨æ„ï¼šå½“å‰ç™»é™†ç”¨æˆ·å¯é€šè¿‡ BeanUser.getCurrentLoginUser è·å–
+   * 
+   * @param name è®¡åˆ’åç§°
+   * @throws BaseException
+   */
+  public BeanPlan addPlan(String name) throws BaseException;
+
+  /**
+   * æå–å½“å‰ç”¨æˆ·æ‰€æœ‰è®¡åˆ’
+   * 
+   * @return
+   * @throws BaseException
+   */
+  public List<BeanPlan> loadAll() throws BaseException;
+
+  /**
+   * åˆ é™¤è®¡åˆ’ï¼Œå¦‚æœè®¡åˆ’ä¸‹å­˜åœ¨æ­¥éª¤ï¼Œåˆ™ä¸å…è®¸åˆ é™¤
+   * 
+   * @param plan
+   * @throws BaseException
+   */
+  public void deletePlan(BeanPlan plan) throws BaseException;
 
 }

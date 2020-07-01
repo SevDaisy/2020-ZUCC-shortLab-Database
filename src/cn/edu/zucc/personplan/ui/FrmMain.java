@@ -148,6 +148,7 @@ public class FrmMain extends JFrame implements ActionListener {
           return;
         }
         FrmMain.this.reloadPlanStepTabel(i);
+        FrmMain.this.reloadPlanTable();
       }
 
     });
@@ -156,7 +157,7 @@ public class FrmMain extends JFrame implements ActionListener {
     this.reloadPlanTable();
     // 状态栏
     statusBar.setLayout(new FlowLayout(FlowLayout.LEFT));
-    JLabel label = new JLabel("您好!" + BeanUser.getCurrentLoginUser().getUserid());// 修改成 您好！+登陆用户名
+    JLabel label = new JLabel("您好!" + BeanUser.currentLoginUser.getUserid());// 修改成 您好！+登陆用户名
     statusBar.add(label);
     this.getContentPane().add(statusBar, BorderLayout.SOUTH);
     this.addWindowListener(new WindowAdapter() {
@@ -179,6 +180,7 @@ public class FrmMain extends JFrame implements ActionListener {
       }
       try {
         PersonPlanUtil.planManager.deletePlan(this.curPlan);
+        this.reloadPlanTable();
       } catch (BaseException e1) {
         JOptionPane.showMessageDialog(null, e1.getMessage(), "错误", JOptionPane.ERROR_MESSAGE);
         return;

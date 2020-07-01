@@ -41,11 +41,9 @@ public class FrmAddPlan extends JDialog implements ActionListener {
     double width = Toolkit.getDefaultToolkit().getScreenSize().getWidth();
     double height = Toolkit.getDefaultToolkit().getScreenSize().getHeight();
     this.setLocation((int) (width - this.getWidth()) / 2, (int) (height - this.getHeight()) / 2);
-
     this.validate();
     this.btnOk.addActionListener(this);
     this.btnCancel.addActionListener(this);
-
   }
 
   @Override
@@ -63,7 +61,5 @@ public class FrmAddPlan extends JDialog implements ActionListener {
         return;
       }
     }
-
   }
-
 }

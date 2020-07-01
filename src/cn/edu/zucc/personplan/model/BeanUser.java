@@ -6,7 +6,7 @@ import java.util.Date;
 
 public class BeanUser {
   public static BeanUser currentLoginUser = null;
-  public static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+  private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
   private String userid;
   private String pwd;
   // private boolean On_Off;
@@ -28,13 +28,13 @@ public class BeanUser {
     }
   }
 
-  public static BeanUser getCurrentLoginUser() {
-    return currentLoginUser;
-  }
+  // public static BeanUser getCurrentLoginUser() {
+  // return currentLoginUser;
+  // }
 
-  public static void setCurrentLoginUser(BeanUser currentLoginUser) {
-    BeanUser.currentLoginUser = currentLoginUser;
-  }
+  // public static void setCurrentLoginUser(BeanUser currentLoginUser) {
+  // BeanUser.currentLoginUser = currentLoginUser;
+  // }
 
   public String getUserid() {
     return userid;
