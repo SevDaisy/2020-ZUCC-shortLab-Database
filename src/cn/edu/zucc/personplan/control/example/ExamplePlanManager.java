@@ -92,7 +92,7 @@ public class ExamplePlanManager implements IPlanManager {
     Connection conn = null;
     try {
       conn = DBUtil.getConnection();
-      String sql = "SELECT plan_name,plan_order,step_count,finished_step_count from tbl_plan where user_id=?";
+      String sql = "SELECT plan_name,plan_order,step_count,finished_step_count,plan_id from tbl_plan where user_id=?";
       java.sql.PreparedStatement pst = conn.prepareStatement(sql);
       pst.setString(1, BeanUser.currentLoginUser.getUserid());
       java.sql.ResultSet rs = pst.executeQuery();
@@ -102,6 +102,7 @@ public class ExamplePlanManager implements IPlanManager {
         p.setPlan_order(rs.getInt(2));
         p.setStep_count(rs.getInt(3));
         p.setFinished_step_count(rs.getInt(4));
+        p.setPlan_id(rs.getInt(5));
         // p.setUser_id(BeanUser.currentLoginUser.getUserid());
         result.add(p);
       }

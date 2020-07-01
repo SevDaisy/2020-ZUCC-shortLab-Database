@@ -2,6 +2,7 @@ package cn.edu.zucc.personplan.model;
 
 public class BeanPlan {
   public static final String[] tableTitles = { "序号", "名称", "步骤数", "已完成数" };
+  private int plan_id;
   private int plan_order;
   private String plan_name;
   private int step_count;
@@ -55,6 +56,14 @@ public class BeanPlan {
 
   public void setFinished_step_count(int finished_step_count) {
     this.finished_step_count = finished_step_count;
+  }
+
+  public int getPlan_id() {
+    return plan_id;
+  }
+
+  public void setPlan_id(int plan_id) {
+    this.plan_id = plan_id;
   }
 
   // public String getUser_id() {
