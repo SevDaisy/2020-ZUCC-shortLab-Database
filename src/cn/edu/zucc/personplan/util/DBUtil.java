@@ -2,7 +2,8 @@ package cn.edu.zucc.personplan.util;
 
 import java.sql.Connection;
 
-public class DBUtil {
+// public class DBUtil {
+class DBUtil {
   private static final String jdbcUrl = "jdbc:mysql://localhost:3306/ShortLab?useUnicode=true&characterEncoding=utf8&useSSL=false";
   // private static final String jdbcUrl =
   // "jdbc:mysql://localhost:3306/booklib?useUnicode=true&characterEncoding=utf8";

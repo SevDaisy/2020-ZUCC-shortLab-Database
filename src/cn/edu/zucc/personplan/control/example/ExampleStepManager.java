@@ -134,10 +134,14 @@ public class ExampleStepManager implements IStepManager {
   @Override
   public void deleteStep(BeanStep step) throws BaseException {
     // 删除步骤， 注意删除后需调整计划表中对应的步骤数量
-    // 涉及两次数据更新，需要事务控制
+    // 涉及三次数据更新，需要事务控制
+
     // 对 plan 的 step_count 的调整，
     // 我认为，step_count 应当与其步骤的最大的step_order保持一致
     // 而不是与 其对应的 step 的数量保持一致
+
+    // 对 plan 的 finished_step_count 的调整
+    // 我认为，如果被删除的步骤已经是finished，那么finished_step_count应该-1
 
     Connection conn = null;
     try {
@@ -150,6 +154,7 @@ public class ExampleStepManager implements IStepManager {
       } else {
         throw new RuntimeException("数据库 删除 step by step_id 异常");
       }
+      // 对 plan 的 step_count 的调整 —— 参数预备
       int step_order_max;
       sql = "SELECT step_order FROM tbl_step WHERE plan_id=? ORDER BY step_order DESC LIMIT 0,1";
       pst = conn.prepareStatement(sql);
@@ -160,11 +165,30 @@ public class ExampleStepManager implements IStepManager {
       } else {
         step_order_max = 0;
       }
+      // 对 plan 的 finished_step_count 的调整 —— 参数预备
+      int finished_step_count = 0;
+      int start_step_count = 0;
+      sql = "SELECT start_step_count,finished_step_count FROM tbl_plan WHERE plan_id=?";
+      pst = conn.prepareStatement(sql);
+      pst.setInt(1, step.getPlan_id());
+      if (rs.next()) {
+        start_step_count = rs.getInt(1);
+        finished_step_count = rs.getInt(2);
+        if (step.getReal_end_time() != null) {
+          finished_step_count -= 1;
+        }
+        if (step.getReal_begin_time() != null) {
+          start_step_count -= 1;
+        }
+      }
       rs.close();
-      sql = "UPDATE tbl_plan SET step_count=? WHERE plan_id=?";
+
+      sql = "UPDATE tbl_plan SET step_count=?,start_step_count=?,finished_step_count=? WHERE plan_id=?";
       pst = conn.prepareStatement(sql);
       pst.setInt(1, step_order_max);
-      pst.setInt(2, step.getPlan_id());
+      pst.setInt(2, start_step_count);
+      pst.setInt(3, finished_step_count);
+      pst.setInt(4, step.getPlan_id());
       if (pst.executeUpdate() == 1) {
         System.out.println("成功更新计划 _id: " + step.getPlan_id() + " 的步骤计数");
       } else {
@@ -284,12 +308,145 @@ public class ExampleStepManager implements IStepManager {
 
   @Override
   public void moveUp(BeanStep step) throws BaseException {
+    /*
+     * 关键在于避免出现 plan_id 和 step_order 同时相等的 step 元组
+     */
+    // 先 得知自己的 step_order
+    // 显然，不可小于 2
+    int old_order = step.getStep_order();
+    if (old_order < 2) {
+      throw new BusinessException("当前步骤是第一步，不能更提前了");
+    }
+    // 目标 序号是 step_order - 1
+    int target_order = old_order - 1;
+    // 不管目标序号上有没有步骤，直接将其 update 至 序号=0
+    // sql: UPDATE tbl_step SET step_order=0
+    // WHERE plan_id=step.getPlan_id() AND step_order=$target_order
+
+    // 设置当前步骤的序号为目标序号
+    // sql: UPDATE tbl_step SET step_order=$target_order
+    // WHERE plan_id=step.getPlan_id() AND step_order=$old_order
+
+    // 重新将0号步骤设置回 old_order
+    // sql: UPDATE tbl_step SET step_order=$old_order
+    // WHERE plan_id=step.getPlan_id() AND step_order=0
+
+    // 这样，需要 3次格式相似的Update
+    // 感觉有点蠢，害，先能用再说
+    Connection conn = null;
+    try {
+      conn = DBUtil_Pool.getConnection();
+      String sql;
+      java.sql.PreparedStatement pst;
+
+      sql = "UPDATE tbl_step SET step_order=? WHERE plan_id=? AND step_order=?";
+      pst = conn.prepareStatement(sql);
+      pst.setInt(1, 0);
+      pst.setInt(2, step.getPlan_id());
+      pst.setInt(3, target_order);
+      pst.executeUpdate();
+
+      sql = "UPDATE tbl_step SET step_order=? WHERE plan_id=? AND step_order=?";
+      pst = conn.prepareStatement(sql);
+      pst.setInt(1, target_order);
+      pst.setInt(2, step.getPlan_id());
+      pst.setInt(3, old_order);
+      pst.executeUpdate();
+
+      sql = "UPDATE tbl_step SET step_order=? WHERE plan_id=? AND step_order=?";
+      pst = conn.prepareStatement(sql);
+      pst.setInt(1, old_order);
+      pst.setInt(2, step.getPlan_id());
+      pst.setInt(3, 0);
+      pst.executeUpdate();
+
+      pst.close();
+    } catch (SQLException e) {
+      e.printStackTrace();
+      throw new DbException(e);
+    } finally {
+      if (conn != null)
+        try {
+          conn.close();
+        } catch (SQLException e) {
+          e.printStackTrace();
+        }
+    }
 
   }
 
   @Override
   public void moveDown(BeanStep step) throws BaseException {
+    // 几乎和 moveUp 一模一样
+    /*
+     * 特殊的是，如果我允许步骤一直往后推，不做边界限制，那么，举个例子
+     */
+    // 在我的代码中，如果有三个步骤，第三个步骤被移至序号4
+    // 然后再创建一个步骤，他会自动成为序号五
+    // 同时，计划的步骤总计数更新为5个
+    // 但是其实只有四个步骤，即使每个步骤都结束了，也将仍有 finished_step_count < step_count
+    // 以至于无法删除这个计划
+    // 这是我所不希望看到的。
+    /*
+     * 因此，我将对后推的步骤也进行边界控制，需要增加一次sql查询(select)
+     */
+    // sql: SELECT step_count From tbl_plan WHERE plan_id=$(step.getPlan_id)
+    int old_order = step.getStep_order();
+    // 目标 序号是 step_order + 1
+    int target_order = old_order + 1;
+    Connection conn = null;
+    try {
+      conn = DBUtil_Pool.getConnection();
+      String sql;
+      java.sql.PreparedStatement pst;
 
+      int order_Max;
+      sql = "SELECT step_count From tbl_plan WHERE plan_id=?";
+      pst = conn.prepareStatement(sql);
+      pst.setInt(1, step.getPlan_id());
+      ResultSet rs = pst.executeQuery();
+      if (rs.next()) {
+        order_Max = rs.getInt(1);
+      } else {
+        throw new RuntimeException("数据库 查询 plan.step_order By plan_id 异常");
+      }
+      rs.close();
+      if (target_order > order_Max) {
+        throw new BusinessException("当前步骤是最后一步，不能再后移了");
+      }
+
+      sql = "UPDATE tbl_step SET step_order=? WHERE plan_id=? AND step_order=?";
+      pst = conn.prepareStatement(sql);
+      pst.setInt(1, 0);
+      pst.setInt(2, step.getPlan_id());
+      pst.setInt(3, target_order);
+      pst.executeUpdate();
+
+      sql = "UPDATE tbl_step SET step_order=? WHERE plan_id=? AND step_order=?";
+      pst = conn.prepareStatement(sql);
+      pst.setInt(1, target_order);
+      pst.setInt(2, step.getPlan_id());
+      pst.setInt(3, old_order);
+      pst.executeUpdate();
+
+      sql = "UPDATE tbl_step SET step_order=? WHERE plan_id=? AND step_order=?";
+      pst = conn.prepareStatement(sql);
+      pst.setInt(1, old_order);
+      pst.setInt(2, step.getPlan_id());
+      pst.setInt(3, 0);
+      pst.executeUpdate();
+
+      pst.close();
+    } catch (SQLException e) {
+      e.printStackTrace();
+      throw new DbException(e);
+    } finally {
+      if (conn != null)
+        try {
+          conn.close();
+        } catch (SQLException e) {
+          e.printStackTrace();
+        }
+    }
   }
-
 }
