@@ -4,35 +4,34 @@ import cn.edu.zucc.personplan.model.BeanUser;
 import cn.edu.zucc.personplan.util.BaseException;
 
 public interface IUserManager {
-	/**
-	 * ×¢²á£º
-	 * ÒªÇóÓÃ»§Ãû²»ÄÜÖØ¸´£¬²»ÄÜÎª¿Õ
-	 * Á½´ÎÊäÈëµÄÃÜÂë±ØĞëÒ»ÖÂ£¬ÃÜÂë²»ÄÜÎª¿Õ
-	 * Èç¹û×¢²áÊ§°Ü£¬ÔòÅ×³öÒì³£
-	 * @param userid
-	 * @param pwd  ÃÜÂë
-	 * @param pwd2 ÖØ¸´ÊäÈëµÄÃÜÂë
-	 * @return
-	 * @throws BaseException
-	 */
-	public BeanUser reg(String userid, String pwd,String pwd2) throws BaseException;
-	/**
-	 * µÇÂ½
-	 * 1¡¢Èç¹ûÓÃ»§²»´æÔÚ»òÕßÃÜÂë´íÎó£¬Å×³öÒ»¸öÒì³£
-	 * 2¡¢Èç¹ûÈÏÖ¤³É¹¦£¬Ôò·µ»Øµ±Ç°ÓÃ»§ĞÅÏ¢
-	 * @param userid
-	 * @param pwd
-	 * @return
-	 * @throws BaseException
-	 */
-	public BeanUser login(String userid,String pwd)throws BaseException;
-	/**
-	 * ĞŞ¸ÄÃÜÂë
-	 * Èç¹ûÃ»ÓĞ³É¹¦ĞŞ¸Ä£¬ÔòÅ×³öÒì³£
-	 * @param user    µ±Ç°ÓÃ»§
-	 * @param oldPwd  Ô­ÃÜÂë
-	 * @param newPwd  ĞÂÃÜÂë
-	 * @param newPwd2 ÖØ¸´ÊäÈëµÄĞÂÃÜÂë
-	 */
-	public void changePwd(BeanUser user, String oldPwd,String newPwd, String newPwd2)throws BaseException;
+  /**
+   * æ³¨å†Œï¼š è¦æ±‚ç”¨æˆ·åä¸èƒ½é‡å¤ï¼Œä¸èƒ½ä¸ºç©º ä¸¤æ¬¡è¾“å…¥çš„å¯†ç å¿…é¡»ä¸€è‡´ï¼Œå¯†ç ä¸èƒ½ä¸ºç©º å¦‚æœæ³¨å†Œå¤±è´¥ï¼Œåˆ™æŠ›å‡ºå¼‚å¸¸
+   * 
+   * @param userid
+   * @param pwd    å¯†ç 
+   * @param pwd2   é‡å¤è¾“å…¥çš„å¯†ç 
+   * @return
+   * @throws BaseException
+   */
+  public BeanUser reg(String userid, String pwd, String pwd2) throws BaseException;
+
+  /**
+   * ç™»é™† 1ã€å¦‚æœç”¨æˆ·ä¸å­˜åœ¨æˆ–è€…å¯†ç é”™è¯¯ï¼ŒæŠ›å‡ºä¸€ä¸ªå¼‚å¸¸ 2ã€å¦‚æœè®¤è¯æˆåŠŸï¼Œåˆ™è¿”å›å½“å‰ç”¨æˆ·ä¿¡æ¯
+   * 
+   * @param userid
+   * @param pwd
+   * @return
+   * @throws BaseException
+   */
+  public BeanUser login(String userid, String pwd) throws BaseException;
+
+  /**
+   * ä¿®æ”¹å¯†ç  å¦‚æœæ²¡æœ‰æˆåŠŸä¿®æ”¹ï¼Œåˆ™æŠ›å‡ºå¼‚å¸¸
+   * 
+   * @param user    å½“å‰ç”¨æˆ·
+   * @param oldPwd  åŸå¯†ç 
+   * @param newPwd  æ–°å¯†ç 
+   * @param newPwd2 é‡å¤è¾“å…¥çš„æ–°å¯†ç 
+   */
+  public void changePwd(BeanUser user, String oldPwd, String newPwd, String newPwd2) throws BaseException;
 }

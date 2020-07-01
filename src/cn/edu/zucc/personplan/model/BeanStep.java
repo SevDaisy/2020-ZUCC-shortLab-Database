@@ -1,18 +1,26 @@
 package cn.edu.zucc.personplan.model;
 
 public class BeanStep {
-	public static final String[] tblStepTitle={"ĞòºÅ","Ãû³Æ","¼Æ»®¿ªÊ¼Ê±¼ä","¼Æ»®Íê³ÉÊ±¼ä","Êµ¼Ê¿ªÊ¼Ê±¼ä","Êµ¼ÊÍê³ÉÊ±¼ä"};
-	/**
-	 * Çë×ÔĞĞ¸ù¾İjavabeanµÄÉè¼ÆĞŞ¸Ä±¾º¯Êı´úÂë£¬col±íÊ¾½çÃæ±í¸ñÖĞµÄÁĞĞòºÅ£¬0¿ªÊ¼
-	 */
-	public String getCell(int col){
-		if(col==0) return "1";
-		else if(col==1) return "Ê¾Àı²½Öè";
-		else if(col==2) return "2015-01-01";
-		else if(col==3) return "2015-08-01";
-		else if(col==4) return "";
-		else if(col==5) return "";
-		
-		else return "";
-	}
+  public static final String[] tblStepTitle = { "åºå·", "åç§°", "è®¡åˆ’å¼€å§‹æ—¶é—´", "è®¡åˆ’å®Œæˆæ—¶é—´", "å®é™…å¼€å§‹æ—¶é—´", "å®é™…å®Œæˆæ—¶é—´" };
+
+  /**
+   * è¯·è‡ªè¡Œæ ¹æ®javabeançš„è®¾è®¡ä¿®æ”¹æœ¬å‡½æ•°ä»£ç ï¼Œcolè¡¨ç¤ºç•Œé¢è¡¨æ ¼ä¸­çš„åˆ—åºå·ï¼Œ0å¼€å§‹
+   */
+  public String getCell(int col) {
+    if (col == 0)
+      return "1";
+    else if (col == 1)
+      return "ç¤ºä¾‹æ­¥éª¤";
+    else if (col == 2)
+      return "2015-01-01";
+    else if (col == 3)
+      return "2015-08-01";
+    else if (col == 4)
+      return "";
+    else if (col == 5)
+      return "";
+
+    else
+      return "";
+  }
 }

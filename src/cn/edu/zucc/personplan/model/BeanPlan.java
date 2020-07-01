@@ -1,16 +1,22 @@
 package cn.edu.zucc.personplan.model;
 
 public class BeanPlan {
-	public static final String[] tableTitles={"ĞòºÅ","Ãû³Æ","²½ÖèÊı","ÒÑÍê³ÉÊı"};
-	/**
-	 * Çë×ÔĞĞ¸ù¾İjavabeanµÄÉè¼ÆĞŞ¸Ä±¾º¯Êı´úÂë£¬col±íÊ¾½çÃæ±í¸ñÖĞµÄÁĞĞòºÅ£¬0¿ªÊ¼
-	 */
-	public String getCell(int col){
-		if(col==0) return "1";
-		else if(col==1) return "Ê¾Àı¼Æ»®";
-		else if(col==2) return "2";
-		else if(col==3) return "1";
-		else return "";
-	}
+  public static final String[] tableTitles = { "åºå·", "åç§°", "æ­¥éª¤æ•°", "å·²å®Œæˆæ•°" };
+
+  /**
+   * è¯·è‡ªè¡Œæ ¹æ®javabeançš„è®¾è®¡ä¿®æ”¹æœ¬å‡½æ•°ä»£ç ï¼Œcolè¡¨ç¤ºç•Œé¢è¡¨æ ¼ä¸­çš„åˆ—åºå·ï¼Œ0å¼€å§‹
+   */
+  public String getCell(int col) {
+    if (col == 0)
+      return "1";
+    else if (col == 1)
+      return "ç¤ºä¾‹è®¡åˆ’";
+    else if (col == 2)
+      return "2";
+    else if (col == 3)
+      return "1";
+    else
+      return "";
+  }
 
 }
