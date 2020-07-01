@@ -3,7 +3,6 @@ package cn.edu.zucc.personplan.control.example;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.Date;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -16,7 +15,7 @@ import cn.edu.zucc.personplan.model.BeanStep;
 import cn.edu.zucc.personplan.model.BeanUser;
 import cn.edu.zucc.personplan.util.BaseException;
 import cn.edu.zucc.personplan.util.BusinessException;
-import cn.edu.zucc.personplan.util.DBUtil;
+import cn.edu.zucc.personplan.util.DBUtil_Pool;
 import cn.edu.zucc.personplan.util.DbException;
 
 public class ExampleStepManager implements IStepManager {
@@ -42,7 +41,7 @@ public class ExampleStepManager implements IStepManager {
     int step_order;
     Connection conn = null;
     try {
-      conn = DBUtil.getConnection();
+      conn = DBUtil_Pool.getConnection();
       String sql = "SELECT step_order FROM tbl_step WHERE plan_id=? ORDER BY step_order DESC LIMIT 0,1";
       java.sql.PreparedStatement pst = conn.prepareStatement(sql);
       pst.setInt(1, plan.getPlan_id());
@@ -94,7 +93,7 @@ public class ExampleStepManager implements IStepManager {
     List<BeanStep> result = new ArrayList<BeanStep>();
     Connection conn = null;
     try {
-      conn = DBUtil.getConnection();
+      conn = DBUtil_Pool.getConnection();
       String sql = "SELECT step_order, step_name, plan_begin_time, plan_end_time,real_begin_time, real_end_time, step_id "
           + "FROM tbl_step " + "WHERE plan_id=?";
       PreparedStatement pst = conn.prepareStatement(sql);
@@ -142,7 +141,7 @@ public class ExampleStepManager implements IStepManager {
 
     Connection conn = null;
     try {
-      conn = DBUtil.getConnection();
+      conn = DBUtil_Pool.getConnection();
       String sql = "DELETE from tbl_step WHERE step_id=?";
       java.sql.PreparedStatement pst = conn.prepareStatement(sql);
       pst.setInt(1, step.getStep_id());

@@ -5,13 +5,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import cn.edu.zucc.personplan.util.DBUtil;
+import cn.edu.zucc.personplan.util.DBUtil_Pool;
 
 public class testRun {
   public void showTables() {
     Connection conn = null;
     try {
-      conn = DBUtil.getConnection();
+      conn = DBUtil_Pool.getConnection();
       String sql = "SELECT create_time from tbl_plan";
       PreparedStatement pst = conn.prepareStatement(sql);
       ResultSet rs = pst.executeQuery();

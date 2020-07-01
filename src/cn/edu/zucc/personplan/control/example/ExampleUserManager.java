@@ -7,7 +7,7 @@ import cn.edu.zucc.personplan.itf.IUserManager;
 import cn.edu.zucc.personplan.model.BeanUser;
 import cn.edu.zucc.personplan.util.BaseException;
 import cn.edu.zucc.personplan.util.BusinessException;
-import cn.edu.zucc.personplan.util.DBUtil;
+import cn.edu.zucc.personplan.util.DBUtil_Pool;
 import cn.edu.zucc.personplan.util.DbException;
 
 public class ExampleUserManager implements IUserManager {
@@ -35,7 +35,7 @@ public class ExampleUserManager implements IUserManager {
     // 再insert插入数据至数据库
     Connection conn = null;
     try {
-      conn = DBUtil.getConnection();
+      conn = DBUtil_Pool.getConnection();
       String sql = "select user_id from tbl_user where user_id=?";
       java.sql.PreparedStatement pst = conn.prepareStatement(sql);
       pst.setString(1, userid);
@@ -92,7 +92,7 @@ public class ExampleUserManager implements IUserManager {
     // return 一个当前的登陆对象
     Connection conn = null;
     try {
-      conn = DBUtil.getConnection();
+      conn = DBUtil_Pool.getConnection();
       String sql = "SELECT user_pwd,register_time from tbl_user where user_id=?";
       java.sql.PreparedStatement pst = conn.prepareStatement(sql);
       pst.setString(1, userid);
@@ -147,7 +147,7 @@ public class ExampleUserManager implements IUserManager {
     // 简单的Update处理即可
     Connection conn = null;
     try {
-      conn = DBUtil.getConnection();
+      conn = DBUtil_Pool.getConnection();
       String sql = "UPDATE tbl_user SET user_pwd=? where user_id=?";
       java.sql.PreparedStatement pst = conn.prepareStatement(sql);
       pst.setString(1, newPwd);

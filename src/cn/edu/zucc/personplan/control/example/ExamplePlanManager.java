@@ -11,7 +11,7 @@ import cn.edu.zucc.personplan.model.BeanPlan;
 import cn.edu.zucc.personplan.model.BeanUser;
 import cn.edu.zucc.personplan.util.BaseException;
 import cn.edu.zucc.personplan.util.BusinessException;
-import cn.edu.zucc.personplan.util.DBUtil;
+import cn.edu.zucc.personplan.util.DBUtil_Pool;
 import cn.edu.zucc.personplan.util.DbException;
 
 public class ExamplePlanManager implements IPlanManager {
@@ -40,7 +40,7 @@ public class ExamplePlanManager implements IPlanManager {
     // insert 一条Plan数据
     Connection conn = null;
     try {
-      conn = DBUtil.getConnection();
+      conn = DBUtil_Pool.getConnection();
       // plan_order 要求新增的计划的排序号为当前用户现有最大排序号+1 先sql查得最大排序号 再+1
       String sql = "SELECT plan_order FROM tbl_plan WHERE user_id=? ORDER BY plan_order DESC LIMIT 0,1";
       java.sql.PreparedStatement pst = conn.prepareStatement(sql);
@@ -91,7 +91,7 @@ public class ExamplePlanManager implements IPlanManager {
     List<BeanPlan> result = new ArrayList<BeanPlan>();
     Connection conn = null;
     try {
-      conn = DBUtil.getConnection();
+      conn = DBUtil_Pool.getConnection();
       String sql = "SELECT plan_name,plan_order,step_count,finished_step_count,plan_id from tbl_plan where user_id=?";
       java.sql.PreparedStatement pst = conn.prepareStatement(sql);
       pst.setString(1, BeanUser.currentLoginUser.getUserid());
@@ -132,7 +132,7 @@ public class ExamplePlanManager implements IPlanManager {
     // 直接数据库 delete
     Connection conn = null;
     try {
-      conn = DBUtil.getConnection();
+      conn = DBUtil_Pool.getConnection();
       String sql = "SELECT finished_step_count,step_count FROM tbl_plan WHERE user_id=? AND plan_order=?";
       java.sql.PreparedStatement pst = conn.prepareStatement(sql);
       pst.setString(1, BeanUser.currentLoginUser.getUserid());
