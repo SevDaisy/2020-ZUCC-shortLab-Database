@@ -7,7 +7,8 @@ public class BeanStep {
   public static final String[] tblStepTitle = { "序号", "名称", "计划开始时间", "计划完成时间", "实际开始时间", "实际完成时间" };
   private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
   private int step_order;
-  // private int plan_order;
+  private int step_id;
+  private int plan_id;
   private String user_id;
   private String step_name;
   private Date plan_begin_time;
@@ -89,5 +90,21 @@ public class BeanStep {
 
   public void setReal_end_time(Date real_end_time) {
     this.real_end_time = real_end_time;
+  }
+
+  public int getStep_id() {
+    return step_id;
+  }
+
+  public void setStep_id(int step_id) {
+    this.step_id = step_id;
+  }
+
+  public int getPlan_id() {
+    return plan_id;
+  }
+
+  public void setPlan_id(int plan_id) {
+    this.plan_id = plan_id;
   }
 }

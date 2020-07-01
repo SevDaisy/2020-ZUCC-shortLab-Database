@@ -95,7 +95,7 @@ public class ExampleStepManager implements IStepManager {
     Connection conn = null;
     try {
       conn = DBUtil.getConnection();
-      String sql = "SELECT step_order, step_name, plan_begin_time, plan_end_time,real_begin_time, real_end_time "
+      String sql = "SELECT step_order, step_name, plan_begin_time, plan_end_time,real_begin_time, real_end_time, step_id "
           + "FROM tbl_step " + "WHERE plan_id=?";
       PreparedStatement pst = conn.prepareStatement(sql);
       pst.setInt(1, plan.getPlan_id());
@@ -108,7 +108,9 @@ public class ExampleStepManager implements IStepManager {
         s.setPlan_end_time(sdf.parse(rs.getString(4)));
         s.setReal_begin_time(rs.getString(5) == null ? null : sdf.parse(rs.getString(5)));
         s.setReal_end_time(rs.getString(6) == null ? null : sdf.parse(rs.getString(6)));
+        s.setStep_id(rs.getInt(7));
         s.setUser_id(BeanUser.currentLoginUser.getUserid());
+        s.setPlan_id(plan.getPlan_id());
         result.add(s);
       }
       rs.close();
@@ -134,13 +136,41 @@ public class ExampleStepManager implements IStepManager {
   public void deleteStep(BeanStep step) throws BaseException {
     // 删除步骤， 注意删除后需调整计划表中对应的步骤数量
     // 涉及两次数据更新，需要事务控制
+    // 对 plan 的 step_count 的调整，
+    // 我认为，step_count 应当与其步骤的最大的step_order保持一致
+    // 而不是与 其对应的 step 的数量保持一致
+
     Connection conn = null;
     try {
       conn = DBUtil.getConnection();
-      String sql = "";
+      String sql = "DELETE from tbl_step WHERE step_id=?";
       java.sql.PreparedStatement pst = conn.prepareStatement(sql);
-      java.sql.ResultSet rs = pst.executeQuery();
+      pst.setInt(1, step.getStep_id());
+      if (pst.executeUpdate() == 1) {
+        System.out.println("成功删除 step _id: " + step.getStep_id());
+      } else {
+        throw new RuntimeException("数据库 删除 step by step_id 异常");
+      }
+      int step_order_max;
+      sql = "SELECT step_order FROM tbl_step WHERE plan_id=? ORDER BY step_order DESC LIMIT 0,1";
+      pst = conn.prepareStatement(sql);
+      pst.setInt(1, step.getPlan_id());
+      ResultSet rs = pst.executeQuery();
+      if (rs.next()) {
+        step_order_max = rs.getInt(1);
+      } else {
+        step_order_max = 0;
+      }
       rs.close();
+      sql = "UPDATE tbl_plan SET step_count=? WHERE plan_id=?";
+      pst = conn.prepareStatement(sql);
+      pst.setInt(1, step_order_max);
+      pst.setInt(2, step.getPlan_id());
+      if (pst.executeUpdate() == 1) {
+        System.out.println("成功更新计划 _id: " + step.getPlan_id() + " 的步骤计数");
+      } else {
+        throw new RuntimeException("数据库 更新 plan 异常");
+      }
       pst.close();
     } catch (SQLException e) {
       e.printStackTrace();
