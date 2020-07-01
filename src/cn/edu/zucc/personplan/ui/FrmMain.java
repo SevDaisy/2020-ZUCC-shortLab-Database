@@ -25,6 +25,7 @@ import javax.swing.table.DefaultTableModel;
 import cn.edu.zucc.personplan.PersonPlanUtil;
 import cn.edu.zucc.personplan.model.BeanPlan;
 import cn.edu.zucc.personplan.model.BeanStep;
+import cn.edu.zucc.personplan.model.BeanUser;
 import cn.edu.zucc.personplan.util.BaseException;
 
 public class FrmMain extends JFrame implements ActionListener {
@@ -155,7 +156,7 @@ public class FrmMain extends JFrame implements ActionListener {
     this.reloadPlanTable();
     // 状态栏
     statusBar.setLayout(new FlowLayout(FlowLayout.LEFT));
-    JLabel label = new JLabel("您好!");// 修改成 您好！+登陆用户名
+    JLabel label = new JLabel("您好!" + BeanUser.getCurrentLoginUser().getUserid());// 修改成 您好！+登陆用户名
     statusBar.add(label);
     this.getContentPane().add(statusBar, BorderLayout.SOUTH);
     this.addWindowListener(new WindowAdapter() {

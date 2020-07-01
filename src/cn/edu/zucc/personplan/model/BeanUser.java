@@ -27,13 +27,14 @@ public class BeanUser {
       throw new RuntimeException("登陆账号的创建时间无法解析");
     }
   }
-  // public static BeanUser getCurrentLoginUser() {
-  // return currentLoginUser;
-  // }
 
-  // public static void setCurrentLoginUser(BeanUser currentLoginUser) {
-  // BeanUser.currentLoginUser = currentLoginUser;
-  // }
+  public static BeanUser getCurrentLoginUser() {
+    return currentLoginUser;
+  }
+
+  public static void setCurrentLoginUser(BeanUser currentLoginUser) {
+    BeanUser.currentLoginUser = currentLoginUser;
+  }
 
   public String getUserid() {
     return userid;
