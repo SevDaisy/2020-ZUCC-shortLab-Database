@@ -37,7 +37,7 @@ public class ExampleStepManager implements IStepManager {
     } catch (ParseException e) {
       throw new BusinessException("请检查时间格式\n请参照：yyyy-MM-dd HH:mm:ss");
     }
-    // 查询 当前计划最大步骤 并 +1 
+    // 查询 当前计划最大步骤 并 +1
     int step_order;
     Connection conn = null;
     try {
@@ -148,8 +148,7 @@ public class ExampleStepManager implements IStepManager {
 
     // 对 plan 的 step_count 的调整，
     // 我认为，step_count 应当与其步骤的最大的step_order保持一致
-    // 而不是与 其对应的 step 的数量保持一致
-
+    // 同时，步骤的 step_order 需要借鉴 plan 删除后的 order 调整来进行调整
 
     // 对 plan 的 finished_step_count 的调整
     // 我认为，如果被删除的步骤已经是finished，那么finished_step_count应该-1
@@ -166,7 +165,7 @@ public class ExampleStepManager implements IStepManager {
       } else {
         throw new RuntimeException("数据库 删除 step by step_id 异常");
       }
-      // 对 plan 的 step_count 的调整 —— 参数预备
+      // step_order 重排
       int step_order_max;
       sql = "SELECT step_order FROM tbl_step WHERE plan_id=? ORDER BY step_order DESC LIMIT 0,1";
       pst = conn.prepareStatement(sql);
@@ -176,6 +175,14 @@ public class ExampleStepManager implements IStepManager {
         step_order_max = rs.getInt(1);
       } else {
         step_order_max = 0;
+      }
+      for (int old_step_order = step.getStep_order(); old_step_order <= step_order_max; old_step_order++) {
+        sql = "UPDATE tbl_step SET step_order=? WHERE step_order=? AND plan_id=?";
+        pst = conn.prepareStatement(sql);
+        pst.setInt(1, old_step_order);
+        pst.setInt(2, old_step_order + 1);
+        pst.setInt(3, step.getPlan_id());
+        pst.executeUpdate();
       }
       // 对 plan 的 finished_step_count 的调整 —— 参数预备
       int finished_step_count = 0;
@@ -197,7 +204,13 @@ public class ExampleStepManager implements IStepManager {
 
       sql = "UPDATE tbl_plan SET step_count=?,start_step_count=?,finished_step_count=? WHERE plan_id=?";
       pst = conn.prepareStatement(sql);
-      pst.setInt(1, step_order_max);
+      int step_count;
+      if (step.getStep_order() < step_order_max) {
+        step_count = step_order_max - 1;
+      } else {
+        step_count = step_order_max;
+      }
+      pst.setInt(1, step_count);
       pst.setInt(2, start_step_count);
       pst.setInt(3, finished_step_count);
       pst.setInt(4, step.getPlan_id());

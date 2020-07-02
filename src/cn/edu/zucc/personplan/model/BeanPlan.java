@@ -7,7 +7,7 @@ public class BeanPlan {
   private String plan_name;
   private int step_count;
   private int finished_step_count;
-  // private String user_id;
+  private String user_id;
   // private int start_step_count;
 
   /**
@@ -66,12 +66,11 @@ public class BeanPlan {
     this.plan_id = plan_id;
   }
 
-  // public String getUser_id() {
-  // return user_id;
-  // }
+  public String getUser_id() {
+    return user_id;
+  }
 
-  // public void setUser_id(String user_id) {
-  // this.user_id = user_id;
-  // }
-
+  public void setUser_id(String user_id) {
+    this.user_id = user_id;
+  }
 }

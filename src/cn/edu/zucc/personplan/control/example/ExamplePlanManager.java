@@ -103,7 +103,7 @@ public class ExamplePlanManager implements IPlanManager {
         p.setStep_count(rs.getInt(3));
         p.setFinished_step_count(rs.getInt(4));
         p.setPlan_id(rs.getInt(5));
-        // p.setUser_id(BeanUser.currentLoginUser.getUserid());
+        p.setUser_id(BeanUser.currentLoginUser.getUserid());
         result.add(p);
       }
       rs.close();
@@ -130,9 +130,13 @@ public class ExamplePlanManager implements IPlanManager {
     // 有未完成的步骤的不应该被删除（有一说一，真狠嗷，不做完不允许取消，哈哈哈哈哈）
     // step部分的代码我还没写，所以这边的step相关数据，还是先从 数据库 查询
     // 直接数据库 delete
+    /*
+     * 删除以后，需要调整计划的 ——> 迭代法实现
+     */
     Connection conn = null;
     try {
       conn = DBUtil_Pool.getConnection();
+      conn.setAutoCommit(false);
       String sql = "SELECT finished_step_count,step_count FROM tbl_plan WHERE user_id=? AND plan_order=?";
       java.sql.PreparedStatement pst = conn.prepareStatement(sql);
       pst.setString(1, BeanUser.currentLoginUser.getUserid());
@@ -147,8 +151,38 @@ public class ExamplePlanManager implements IPlanManager {
       pst.setString(1, BeanUser.currentLoginUser.getUserid());
       pst.setInt(2, plan.getPlan_order());
       pst.executeUpdate();
+
+      // 进行删除plan 以后的 plan_order 修改
+      int plan_order_max = 0;
+      sql = "SELECT plan_order FROM tbl_plan WHERE user_id=? ORDER BY plan_order DESC LIMIT 0,1";
+      pst = conn.prepareStatement(sql);
+      pst.setString(1, plan.getUser_id());
+      rs = pst.executeQuery();
+      if (rs.next()) {
+        plan_order_max = rs.getInt(1);
+      } else {
+        plan_order_max = 0;
+      }
+      for (int old_plan_order = plan.getPlan_order(); old_plan_order <= plan_order_max; old_plan_order++) {
+        sql = "UPDATE tbl_plan SET plan_order=? WHERE plan_order=? AND user_id=?";
+        pst = conn.prepareStatement(sql);
+        pst.setInt(1, old_plan_order);
+        pst.setInt(2, old_plan_order + 1);
+        pst.setString(3, plan.getUser_id());
+        pst.executeUpdate();
+      }
+
+      conn.commit();
       pst.close();
     } catch (SQLException e) {
+      System.out.println("出现SQL异常，开始回滚");
+      try {
+        conn.rollback();
+        System.out.println("回滚成功");
+      } catch (SQLException e1) {
+        System.out.println("回滚失败！！！");
+        throw new DbException(e1);
+      }
       e.printStackTrace();
       throw new DbException(e);
     } finally {
