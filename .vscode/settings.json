@@ -1,0 +1,6 @@
+{
+  "files.exclude": {
+    "**/.classpath": false
+  },
+  "workbench.colorTheme": "Default Dark+"
+}
