@@ -37,11 +37,12 @@ public class ExampleStepManager implements IStepManager {
     } catch (ParseException e) {
       throw new BusinessException("请检查时间格式\n请参照：yyyy-MM-dd HH:mm:ss");
     }
-    // 查询 当前计划最大步骤 并 +1
+    // 查询 当前计划最大步骤 并 +1 
     int step_order;
     Connection conn = null;
     try {
       conn = DBUtil_Pool.getConnection();
+      conn.setAutoCommit(false);
       String sql = "SELECT step_order FROM tbl_step WHERE plan_id=? ORDER BY step_order DESC LIMIT 0,1";
       java.sql.PreparedStatement pst = conn.prepareStatement(sql);
       pst.setInt(1, plan.getPlan_id());
@@ -63,7 +64,7 @@ public class ExampleStepManager implements IStepManager {
       } else {
         throw new RuntimeException("数据库 插入 step 异常");
       }
-      // !!! 惊现第二次数据操作，需要事务控制！但是我写不来，现在是深夜不想查Google
+      // !!! 惊现第二次数据操作，需要事务控制！
       sql = "UPDATE tbl_plan SET step_count=? WHERE plan_id=?";
       pst = conn.prepareStatement(sql);
       pst.setInt(1, step_order);
@@ -73,9 +74,18 @@ public class ExampleStepManager implements IStepManager {
       } else {
         throw new RuntimeException("数据库 更新 plan 异常");
       }
+      conn.commit();
       rs.close();
       pst.close();
     } catch (SQLException e) {
+      System.out.println("出现SQL异常，开始回滚");
+      try {
+        conn.rollback();
+        System.out.println("回滚成功");
+      } catch (SQLException e1) {
+        System.out.println("回滚失败！！！");
+        throw new DbException(e1);
+      }
       e.printStackTrace();
       throw new DbException(e);
     } finally {
@@ -134,11 +144,12 @@ public class ExampleStepManager implements IStepManager {
   @Override
   public void deleteStep(BeanStep step) throws BaseException {
     // 删除步骤， 注意删除后需调整计划表中对应的步骤数量
-    // 涉及三次数据更新，需要事务控制
+    // 涉及两次数据更新，需要事务控制
 
     // 对 plan 的 step_count 的调整，
     // 我认为，step_count 应当与其步骤的最大的step_order保持一致
     // 而不是与 其对应的 step 的数量保持一致
+
 
     // 对 plan 的 finished_step_count 的调整
     // 我认为，如果被删除的步骤已经是finished，那么finished_step_count应该-1
@@ -146,6 +157,7 @@ public class ExampleStepManager implements IStepManager {
     Connection conn = null;
     try {
       conn = DBUtil_Pool.getConnection();
+      conn.setAutoCommit(false);
       String sql = "DELETE from tbl_step WHERE step_id=?";
       java.sql.PreparedStatement pst = conn.prepareStatement(sql);
       pst.setInt(1, step.getStep_id());
@@ -194,8 +206,17 @@ public class ExampleStepManager implements IStepManager {
       } else {
         throw new RuntimeException("数据库 更新 plan 异常");
       }
+      conn.commit();
       pst.close();
     } catch (SQLException e) {
+      System.out.println("出现SQL异常，开始回滚");
+      try {
+        conn.rollback();
+        System.out.println("回滚成功");
+      } catch (SQLException e1) {
+        System.out.println("回滚失败！！！");
+        throw new DbException(e1);
+      }
       e.printStackTrace();
       throw new DbException(e);
     } finally {
@@ -218,6 +239,7 @@ public class ExampleStepManager implements IStepManager {
     Connection conn = null;
     try {
       conn = DBUtil_Pool.getConnection();
+      conn.setAutoCommit(false);
       String sql = "UPDATE tbl_step SET real_begin_time=? WHERE step_id=?";
       java.sql.PreparedStatement pst = conn.prepareStatement(sql);
       pst.setTimestamp(1, new java.sql.Timestamp(timeNow));
@@ -243,8 +265,17 @@ public class ExampleStepManager implements IStepManager {
       } else {
         throw new RuntimeException("数据库 更新 plan 异常");
       }
+      conn.commit();
       pst.close();
     } catch (SQLException e) {
+      System.out.println("出现SQL异常，开始回滚");
+      try {
+        conn.rollback();
+        System.out.println("回滚成功");
+      } catch (SQLException e1) {
+        System.out.println("回滚失败！！！");
+        throw new DbException(e1);
+      }
       e.printStackTrace();
       throw new DbException(e);
     } finally {
@@ -267,6 +298,7 @@ public class ExampleStepManager implements IStepManager {
     Connection conn = null;
     try {
       conn = DBUtil_Pool.getConnection();
+      conn.setAutoCommit(false);
       String sql = "UPDATE tbl_step SET real_end_time=? WHERE step_id=?";
       java.sql.PreparedStatement pst = conn.prepareStatement(sql);
       pst.setTimestamp(1, new java.sql.Timestamp(timeNow));
@@ -292,8 +324,17 @@ public class ExampleStepManager implements IStepManager {
       } else {
         throw new RuntimeException("数据库 更新 plan 异常");
       }
+      conn.commit();
       pst.close();
     } catch (SQLException e) {
+      System.out.println("出现SQL异常，开始回滚");
+      try {
+        conn.rollback();
+        System.out.println("回滚成功");
+      } catch (SQLException e1) {
+        System.out.println("回滚失败！！！");
+        throw new DbException(e1);
+      }
       e.printStackTrace();
       throw new DbException(e);
     } finally {
@@ -336,6 +377,7 @@ public class ExampleStepManager implements IStepManager {
     Connection conn = null;
     try {
       conn = DBUtil_Pool.getConnection();
+      conn.setAutoCommit(false);
       String sql;
       java.sql.PreparedStatement pst;
 
@@ -360,8 +402,17 @@ public class ExampleStepManager implements IStepManager {
       pst.setInt(3, 0);
       pst.executeUpdate();
 
+      conn.commit();
       pst.close();
     } catch (SQLException e) {
+      System.out.println("出现SQL异常，开始回滚");
+      try {
+        conn.rollback();
+        System.out.println("回滚成功");
+      } catch (SQLException e1) {
+        System.out.println("回滚失败！！！");
+        throw new DbException(e1);
+      }
       e.printStackTrace();
       throw new DbException(e);
     } finally {
@@ -397,6 +448,7 @@ public class ExampleStepManager implements IStepManager {
     Connection conn = null;
     try {
       conn = DBUtil_Pool.getConnection();
+      conn.setAutoCommit(false);
       String sql;
       java.sql.PreparedStatement pst;
 
@@ -436,8 +488,17 @@ public class ExampleStepManager implements IStepManager {
       pst.setInt(3, 0);
       pst.executeUpdate();
 
+      conn.commit();
       pst.close();
     } catch (SQLException e) {
+      System.out.println("出现SQL异常，开始回滚");
+      try {
+        conn.rollback();
+        System.out.println("回滚成功");
+      } catch (SQLException e1) {
+        System.out.println("回滚失败！！！");
+        throw new DbException(e1);
+      }
       e.printStackTrace();
       throw new DbException(e);
     } finally {
