@@ -174,6 +174,7 @@ public class FrmMain extends JFrame implements ActionListener {
     if (e.getSource() == this.menuItem_AddPlan) {
       FrmAddPlan dlg = new FrmAddPlan(this, "添加计划", true);
       dlg.setVisible(true);
+      this.reloadPlanTable();
     } else if (e.getSource() == this.menuItem_DeletePlan) {
       if (this.curPlan == null) {
         JOptionPane.showMessageDialog(null, "请选择计划", "错误", JOptionPane.ERROR_MESSAGE);
@@ -190,6 +191,12 @@ public class FrmMain extends JFrame implements ActionListener {
       FrmAddStep dlg = new FrmAddStep(this, "添加步骤", true);
       dlg.plan = curPlan;
       dlg.setVisible(true);
+      this.reloadPlanTable();
+      int j = FrmMain.this.dataTablePlan.getSelectedRow();
+      if (j < 0) {
+        return;
+      }
+      FrmMain.this.reloadPlanStepTabel(j);
     } else if (e.getSource() == this.menuItem_DeleteStep) {
       int i = FrmMain.this.dataTableStep.getSelectedRow();
       if (i < 0) {
@@ -198,6 +205,11 @@ public class FrmMain extends JFrame implements ActionListener {
       }
       try {
         PersonPlanUtil.stepManager.deleteStep(this.planSteps.get(i));
+        int j = FrmMain.this.dataTablePlan.getSelectedRow();
+        if (j < 0) {
+          return;
+        }
+        FrmMain.this.reloadPlanStepTabel(j);
       } catch (BaseException e1) {
         JOptionPane.showMessageDialog(null, e1.getMessage(), "错误", JOptionPane.ERROR_MESSAGE);
         return;
@@ -210,6 +222,11 @@ public class FrmMain extends JFrame implements ActionListener {
       }
       try {
         PersonPlanUtil.stepManager.startStep(this.planSteps.get(i));
+        int j = FrmMain.this.dataTablePlan.getSelectedRow();
+        if (j < 0) {
+          return;
+        }
+        FrmMain.this.reloadPlanStepTabel(j);
       } catch (BaseException e1) {
         JOptionPane.showMessageDialog(null, e1.getMessage(), "错误", JOptionPane.ERROR_MESSAGE);
         return;
@@ -222,6 +239,13 @@ public class FrmMain extends JFrame implements ActionListener {
       }
       try {
         PersonPlanUtil.stepManager.finishStep(this.planSteps.get(i));
+        int j = FrmMain.this.dataTablePlan.getSelectedRow();
+        // if (j < 0) {
+        // return;
+        // }
+        // FrmMain.this.reloadPlanStepTabel(j);
+        this.reloadPlanStepTabel(curPlan.getPlan_order() - 1);
+        this.reloadPlanTable();
       } catch (BaseException e1) {
         JOptionPane.showMessageDialog(null, e1.getMessage(), "错误", JOptionPane.ERROR_MESSAGE);
         return;
@@ -234,6 +258,11 @@ public class FrmMain extends JFrame implements ActionListener {
       }
       try {
         PersonPlanUtil.stepManager.moveUp(this.planSteps.get(i));
+        int j = FrmMain.this.dataTablePlan.getSelectedRow();
+        if (j < 0) {
+          return;
+        }
+        FrmMain.this.reloadPlanStepTabel(j);
       } catch (BaseException e1) {
         JOptionPane.showMessageDialog(null, e1.getMessage(), "错误", JOptionPane.ERROR_MESSAGE);
         return;
@@ -246,6 +275,11 @@ public class FrmMain extends JFrame implements ActionListener {
       }
       try {
         PersonPlanUtil.stepManager.moveDown(this.planSteps.get(i));
+        int j = FrmMain.this.dataTablePlan.getSelectedRow();
+        if (j < 0) {
+          return;
+        }
+        FrmMain.this.reloadPlanStepTabel(j);
       } catch (BaseException e1) {
         JOptionPane.showMessageDialog(null, e1.getMessage(), "错误", JOptionPane.ERROR_MESSAGE);
         return;
@@ -255,6 +289,8 @@ public class FrmMain extends JFrame implements ActionListener {
     } else if (e.getSource() == this.menuItem_modifyPwd) {
       FrmModifyPwd dlg = new FrmModifyPwd(this, "密码修改", true);
       dlg.setVisible(true);
+      this.reloadPlanTable();
+
     }
   }
 }
